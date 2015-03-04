@@ -7,21 +7,6 @@ using System.Collections.Generic;
 
 public class Packager
 {
-    public static string platform = string.Empty;
-    static List<string> paths = new List<string>();
-    static List<string> files = new List<string>();
-
-    ///-----------------------------------------------------------
-    static string[] exts = { ".txt", ".xml", ".lua", ".assetbundle" };
-    static bool CanCopy(string ext)
-    {   //能不能复制
-        foreach (string e in exts)
-        {
-            if (ext.Equals(e)) return true;
-        }
-        return false;
-    }
-
     [MenuItem("ME Tools/清理缓存,让一切重新开始")]
     static void CleanCacheFiles()
     {
@@ -79,7 +64,7 @@ public class Packager
         //获取在Project视图中选择的所有游戏对象
         Object[] SelectedAsset = Selection.GetFiltered(typeof(Object), SelectionMode.DeepAssets);
         BuildTarget target = GetTargetPlatform();
-        string assetPath = Application.dataPath + "/Data/asset/" + target.ToString() + "/";
+        string assetPath = Application.dataPath + "/Data/asset/" + target.ToString().ToLower() + "/";
 
         if (!Directory.Exists(assetPath))
         {
@@ -163,7 +148,7 @@ public class Packager
     {
         // string dir = Application.dataPath + "/StreamingAssets";
         BuildTarget target = GetTargetPlatform();
-        string assetPath = Application.dataPath + "/Data/asset/" + target.ToString() + "/Atlas/";
+        string assetPath = Application.dataPath + "/Data/asset/" + target.ToString().ToLower() + "/Atlas/";
 
         if (!Directory.Exists(assetPath))
         {
@@ -218,26 +203,7 @@ public class Packager
 		return GetBuildTarget ();
 
     }
-
-    /// <summary>
-    /// 遍历目录及其子目录
-    /// </summary>
-    static void Recursive(string path)
-    {
-        string[] names = Directory.GetFiles(path);
-        string[] dirs = Directory.GetDirectories(path);
-        foreach (string filename in names)
-        {
-            string ext = Path.GetExtension(filename);
-            if (ext.Equals(".meta")) continue;
-            files.Add(filename.Replace('\\', '/'));
-        }
-        foreach (string dir in dirs)
-        {
-            paths.Add(dir.Replace('\\', '/'));
-            Recursive(dir);
-        }
-    }
+     
 
     static void cleanMeta(string path)
     {
@@ -255,8 +221,7 @@ public class Packager
             foreach (string dir in dirs)
             {
                 cleanMeta(dir);
-            }
-
+            }         
         }
     }
 }
